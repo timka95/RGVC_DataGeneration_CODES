@@ -242,7 +242,10 @@ for i in range(len(osszesitett_data)):
 # }
 
 # scipy.io.savemat('/Users/timeanemet/Desktop/CNN/matfiles/data_pairs_cutted2.mat', output_data,  long_field_names=True)
-
+# numberofimages = 0
+# for data in newdataarray:
+#     numberofimages = numberofimages+1
+# print("NUMBER OF IMAGES:", numberofimages)
 
 def write_data_to_csv(data_array, filename):
     with open(filename, 'w', newline='') as csvfile:
