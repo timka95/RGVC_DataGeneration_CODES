@@ -10,7 +10,8 @@ import csv
 # Load the .mat file
 #data = scipy.io.loadmat('/Users/timeanemet/Desktop/CNN/matfiles/subset_data.mat')
 #data = scipy.io.loadmat("/home/bence/madTables/osszesitett.mat")
-data = scipy.io.loadmat("/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/new_osszesitett_2.mat")
+# data = scipy.io.loadmat("/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/new_osszesitett_2.mat")
+data = scipy.io.loadmat("/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/new_osszesitett_2.mat")
 
 
 keys = data.keys()
@@ -29,20 +30,19 @@ lines_3D = []
 newdataarray = []
 maxcuts = 0
 maximage = ""
+imagenumberBIG = {}
 
 for i in range(len(osszesitett_data)):
     print(len(osszesitett_data), "---------", i, len(osszesitett_data[i][1]))
     image_id_1 = str(osszesitett_data[i][0][0])  # Convert to string
     imglines = []
 
+
     
     for j in range(len(osszesitett_data[i][1])):
         lines = osszesitett_data[i][1][j].flatten().tolist()
-
-
-
-
         lines3d = osszesitett_data[i][2][j].flatten().tolist()
+        imagenumberBIG[image_id_1] = j + 1
 
 
         
@@ -236,16 +236,118 @@ for i in range(len(osszesitett_data)):
 
 
 
-# # Initialize an empty dictionary to hold all the data
-# output_data = {
-#     'data2': newdataarray
-# }
+# atlag = 0
+# max = 0
+# maxname = []
+# min = 10000
+# minname = []
+# count = 0
+# ossz = 0
 
-# scipy.io.savemat('/Users/timeanemet/Desktop/CNN/matfiles/data_pairs_cutted2.mat', output_data,  long_field_names=True)
-# numberofimages = 0
+# linenumbers = {}
+
+# for data in imagenumberBIG:
+#     number = imagenumberBIG[data]
+#     key = number
+#     if(key in linenumbers):
+#         linenumbers[key] = linenumbers[key] + 1
+#     else:
+#         linenumbers[key] = 1
+
+
+
+#     count = count+1
+#     ossz = ossz + number
+#     if(number >= max):
+#         max = number
+#         if max == 38:
+#             maxname.append(data)
+#     if(number <= min):
+#         min = number
+#         if min == 1:
+#             minname.append(data)
+       
+# print("ATLAG: ", ossz/count)
+# print("MIN: ",min )
+# print("How many have min: ", len(minname))
+# print("MAX: ",max )
+# print("MAXNAME: ", maxname)
+# print("OSSZ: ", ossz)
+# print("COUNT: ", count)
+
+
+# for data in linenumbers:
+#     print("-------------------")
+#     print(data)
+#     print("--")
+#     print(linenumbers[data])
+    
+
+# xaxis = []
+# for i in sorted(linenumbers.keys()):
+#         print(i, end=" ")
+#         xaxis.append(i)
+# bar = plt.bar(linenumbers.keys(), linenumbers.values())
+# # Import pyplot again to ensure xticks has not been overwritten
+# import matplotlib.pyplot as plt
+# # Set x-ticks to be every key in your dictionary
+# plt.xticks(xaxis)
+# # Add data labels
+# for ba in bar:
+#     yval = ba.get_height()
+#     plt.text(ba.get_x() + ba.get_width()/2.0, yval, int(yval), va='bottom') # va: vertical alignment
+# # Show the plot
+# plt.show()
+
+# linnumbers = 0 
+# linesincutted = {}
+# max = 0
+# min = 10000
+# ossz = 0
+# count = 0
+
+
 # for data in newdataarray:
-#     numberofimages = numberofimages+1
-# print("NUMBER OF IMAGES:", numberofimages)
+#     count = count +1
+#     name = data["ID"]
+#     key = len(data["2D"])
+#     ossz = ossz + key
+#     if(key in linesincutted):
+#         linesincutted[key] = linesincutted[key] + 1
+#     else:
+#         linesincutted[key] = 1
+#     if(key < min ):
+#         min = key
+#     if(key > max):
+#         max = key
+#         maximage = name
+
+# for data in linesincutted:
+#     print("-------------------")
+#     print(data)
+#     print("--")
+#     print(linesincutted[data])
+    
+
+# xaxis = []
+# for i in sorted(linesincutted.keys()):
+#         print(i, end=" ")
+#         xaxis.append(i)
+# bar = plt.bar(linesincutted.keys(), linesincutted.values())
+# # Import pyplot again to ensure xticks has not been overwritten
+# import matplotlib.pyplot as plt
+# # Set x-ticks to be every key in your dictionary
+# plt.xticks(xaxis)
+# # Add data labels
+# for ba in bar:
+#     yval = ba.get_height()
+#     plt.text(ba.get_x() + ba.get_width()/2.0, yval, int(yval), va='bottom') # va: vertical alignment
+# # Show the plot
+# plt.show()
+
+
+
+
 
 def write_data_to_csv(data_array, filename):
     with open(filename, 'w', newline='') as csvfile:
@@ -256,7 +358,9 @@ def write_data_to_csv(data_array, filename):
             writer.writerow(data)
 
 # Replace this line with the actual name of your CSV file
-filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data.csv'
+# filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data.csv'
+filename = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data.csv'
+
 
 write_data_to_csv(newdataarray, filename)
 
