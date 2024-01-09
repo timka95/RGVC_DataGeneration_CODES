@@ -7,12 +7,12 @@ import csv
 import scipy.io
 
 #INPUT
-#file_path = "/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data.csv
+file_path = "/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data.csv"
 #file_path = "/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data.csv"
 #file_path = "/Users/timeanemet/Desktop/CNN/matfiles/data.csv"
 
 #OUTPUT
-filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/matlab/Every_data_2.csv'
+filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Every_data_2.csv'
 #filename = '/Users/timeanemet/Desktop/CNN/matfiles/Every_data_2.csv'
 #filename = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/Every_data_2.csv'
 
