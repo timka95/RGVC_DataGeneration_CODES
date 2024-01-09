@@ -144,7 +144,8 @@ def convert_string_to_array_cutedhere(mystring):
 
 
 # Use the function to read a csv file and print the result
-file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/matlab/Every_data_2.csv'
+#file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/matlab/Every_data_2.csv'
+file_path = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/Every_data_2.csv'
 #file_path = '/Users/timeanemet/Desktop/CNN/matfiles/Every_data_2.csv'
 result = read_csv(file_path)
 
@@ -230,7 +231,7 @@ output_data = {
     'data_cutted_pairs': data_to_save
 }
 
-scipy.io.savemat('/project/ntimea/l2d2/IMAGE_PAIR_GT/matlab/data_cutted_pairs_3.mat', output_data,  long_field_names=True, oned_as='column')
+scipy.io.savemat('/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data_cutted_pairs_3.mat', output_data,  long_field_names=True, oned_as='column')
 
 #scipy.io.savemat('/Volumes/ADATA_HDD/NEW_CNN/matfiles/data_cutted_pairs_2.mat', output_data,  long_field_names=True, oned_as='column')
 
