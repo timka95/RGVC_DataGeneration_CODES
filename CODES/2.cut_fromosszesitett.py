@@ -7,12 +7,15 @@ import matplotlib.pyplot as plt
 import scipy.io as sio
 import csv
 
-# Load the .mat file
+#INPUT
 #data = scipy.io.loadmat('/Users/timeanemet/Desktop/CNN/matfiles/subset_data.mat')
 #data = scipy.io.loadmat("/home/bence/madTables/osszesitett.mat")
-# data = scipy.io.loadmat("/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/new_osszesitett_2.mat")
-data = scipy.io.loadmat("/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/new_osszesitett_2.mat")
+data = scipy.io.loadmat("/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/new_osszesitett_2.mat")
+#data = scipy.io.loadmat("/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/new_osszesitett_2.mat")
 
+#OUTPUT
+filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data.csv'
+#filename = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data.csv'
 
 keys = data.keys()
 
@@ -358,8 +361,7 @@ def write_data_to_csv(data_array, filename):
             writer.writerow(data)
 
 # Replace this line with the actual name of your CSV file
-# filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data.csv'
-filename = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data.csv'
+
 
 
 write_data_to_csv(newdataarray, filename)

@@ -6,6 +6,20 @@ import numpy as np
 import csv
 import scipy.io
 
+#INPUT
+file_path = "/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data.csv"
+#file_path = "/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data.csv"
+#file_path = "/Users/timeanemet/Desktop/CNN/matfiles/data.csv"
+
+#OUTPUT
+filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Every_data_2.csv'
+#filename = '/Users/timeanemet/Desktop/CNN/matfiles/Every_data_2.csv'
+#filename = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/Every_data_2.csv'
+
+
+
+
+
 
 
 def read_csv(file_path):
@@ -255,8 +269,7 @@ def RhoThetaClac(lines):
 
 
 
-file_path = "/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data.csv"
-#file_path = "/Users/timeanemet/Desktop/CNN/matfiles/data.csv"
+
 
 
 result = read_csv(file_path)
@@ -365,9 +378,7 @@ def write_data_to_csv(data_array, filename):
             writer.writerow(data)
 
 # Replace this line with the actual name of your CSV file
-#filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/matlab/Every_data_2.csv'
-#filename = '/Users/timeanemet/Desktop/CNN/matfiles/Every_data_2.csv'
-filename = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/Every_data_2.csv'
+
 
 
 write_data_to_csv(new_array, filename)
