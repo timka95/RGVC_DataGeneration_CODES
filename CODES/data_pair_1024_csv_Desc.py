@@ -3,6 +3,19 @@ import numpy as np
 import csv
 import scipy.io
 
+
+
+#INPUT
+# Use the function to read a csv file and print the result
+file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/matlab/Every_data_2.csv'
+file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Every_data_2.csv'
+#file_path = '/Users/timeanemet/Desktop/CNN/matfiles/Every_data_2.csv'
+
+#OUTPUT
+#filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/matlab/data_cutted_pairs_Descr.mat'
+filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data_cutted_pairs_Descr.mat'
+#filename = '/Volumes/ADATA_HDD/NEW_CNN/matfiles/data_cutted_pairs_2.mat'
+
 # This function reads the csv file and stores it in the desired format
 def read_csv(file_path):
     # Read the CSV file
@@ -143,9 +156,7 @@ def convert_string_to_array_cutedhere(mystring):
 
 
 
-# Use the function to read a csv file and print the result
-file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/matlab/Every_data_2.csv'
-#file_path = '/Users/timeanemet/Desktop/CNN/matfiles/Every_data_2.csv'
+
 result = read_csv(file_path)
 
 for i in range(len(result)):  
@@ -229,9 +240,8 @@ for i in range(len(result)):
 # 'third_col_data_2': third_col_data_2
 
 output_data = {
-    'data_cutted_pairs': data_to_save
+    'data_cutted_pairs_Descr': data_to_save
 }
 
-scipy.io.savemat('/project/ntimea/l2d2/IMAGE_PAIR_GT/matlab/data_cutted_pairs_Descr.mat', output_data,  long_field_names=True, oned_as='column')
-#scipy.io.savemat('/Volumes/ADATA_HDD/NEW_CNN/matfiles/data_cutted_pairs_2.mat', output_data,  long_field_names=True, oned_as='column')
 
+scipy.io.savemat(filename, output_data,  long_field_names=True, oned_as='column')
