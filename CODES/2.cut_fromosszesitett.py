@@ -201,7 +201,6 @@ for i in range(len(osszesitett_data)):
     LINE_2D = segedarray["2D"]
 
     for cuts in savearray:
-        
         start = cuts[0]
         end = cuts[1]
         for lines in LINE_2D[:]:

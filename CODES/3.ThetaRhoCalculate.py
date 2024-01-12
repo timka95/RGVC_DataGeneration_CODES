@@ -16,7 +16,23 @@ filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Ev
 #filename = '/Users/timeanemet/Desktop/CNN/matfiles/Every_data_2.csv'
 #filename = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/Every_data_2.csv'
 
+image_x = 512
+image_y = 512
+imageHough_x = 60
+imageHough_y = 182
 
+
+middle_x = int(image_x/2)
+middle_y = int(image_y/2)
+houghthetamiddle = int(imageHough_x/2)
+houghrhomiddle = int(imageHough_y/2)
+angle = 0.75
+
+
+orig_width = 376
+orig_height = 376
+new_width = 512
+new_height = 512
 
 
 
@@ -150,25 +166,6 @@ def convert_string_to_array_cutedhere(mystring):
     
     return array
 
-
-
-
-
-
-
-
-# Points that describes a line
-
-# 2 [343.029000000000,140.373000000000,581.989000000000,151.236000000000]
-# [732.996000000000,214.867000000000,645.987000000000,217.565000000000]
-
-
-
-
-# lines = [[353.6517446808511, 220.4936170212766, 378.19234042553194, 453.627914893617]]
-# lines = lines[0]
-
-
 def RhoThetaClac(lines):
     
 
@@ -179,6 +176,8 @@ def RhoThetaClac(lines):
 
     x1, y1 = point1
     x2, y2 = point2
+
+
 
     # Adjacent and Opposite calculated
     a = abs(x1-x2)
@@ -283,45 +282,7 @@ for i in range(len(result)):
     result[i]["2D_orig"] = convert_string_to_array(result[i]["2D_orig"], 4)
     result[i]["3D"] = convert_string_to_array(result[i]["3D"],6)
     result[i]["cutedhere"] = convert_string_to_array_cutedhere(result[i]["cutedhere"])
-    
 
-
-
-
-
-
-
-
-
-
-# middle_y = 64
-# middle_x = 64 # The middle of the 128*128 image. Everything is calculated respect to this
-# houghrhomiddle = 91 # The middle of the rho values in our case sqrt(128** + 128**) --> 182
-# houghthetamiddle = 30 # The middle of the theta values in our case (180 --> 3 degree --> 60) 
-
-
-
-#1408, 376, 1458, 512
-# middle_x = 64  # The middle of the 128*128 image. Everything is calculated with respect to this
-# middle_y = 64
-# houghrhomiddle = 91  # The middle of the rho values in our case sqrt(128**2 + 128**2) --> 182
-# houghthetamiddle = 30  # The middle of the theta values in our case (180 --> 3 degrees --> 60)
-# angle = 3
-    
-
-
-
-middle_x = 256  # The middle of the 512*512 image. Everything is calculated with respect to this
-middle_y = 256
-houghrhomiddle = 364  # The middle of the rho values in our case sqrt(128**2 + 128**2) --> 182
-houghthetamiddle = 120  # The middle of the theta values in our case (180 --> 3 degrees --> 60)
-angle = 0.75
-
-
-orig_width = 376
-orig_height = 376
-new_width = 512
-new_height = 512
 
 
 new_coordinates = []
@@ -338,17 +299,20 @@ for i in range(len(result)):
     lines = current["2D"]
     # print(len(lines))
     for line in lines:
-        rhotheta = RhoThetaClac(line)
-        rhotheta_array.append(rhotheta)
-        rhotheta = []
 
         new_x1 = (line[0] / orig_width) * new_width
         new_y1 = (line[1] / orig_height) * new_height
         new_x2 = (line[2] / orig_width) * new_width
         new_y2 = (line[3] / orig_height) * new_height
 
+
         new_coordinates = [new_x1, new_y1, new_x2, new_y2]
+
         new_coordinates_all.append(new_coordinates)
+
+        rhotheta = RhoThetaClac(new_coordinates)
+        rhotheta_array.append(rhotheta)
+        rhotheta = []
 
         
 
