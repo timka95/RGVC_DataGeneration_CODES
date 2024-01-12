@@ -9,7 +9,7 @@ import scipy.io as sio
 import csv
 
 
-imagename = '0000000741'
+imagename = '0000000035'
 imagesavepath = f'/Volumes/TIMKA/NEW_CNN/Images/LINES/{imagename}.png'
 imagepath = f"/Volumes/TIMKA/NEW_CNN/Images/Kitti_360/orig/{imagename}.png"
 # imagesavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/CODES/TEST/IMAGES/LINES/{imagename}.png'
