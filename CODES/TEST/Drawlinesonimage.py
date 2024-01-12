@@ -9,7 +9,7 @@ import csv
 
 
 
-imagename = '0000000086'
+imagename = '0000000035'
 #imagesavepath = f'/Volumes/TIMKA/NEW_CNN/Images/LINES/{imagename}.png'
 imagesavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/CODES/TEST/IMAGES/LINES/{imagename}.png'
 imagepath = f'/project/Datasets/KITTI_360/2013_05_28_drive_0000_sync/image_00/data_rect/{imagename}.png'
