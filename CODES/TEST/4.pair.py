@@ -54,6 +54,8 @@ def read_csv(file_path):
 
 csvdata = read_csv(file_path)
 data_to_save = []
+allmachnum = {}
+thismatchnum = 0
 
 for i in range(len(csvdata)):  
     csvdata[i] = csvdata[i][0]
@@ -77,7 +79,7 @@ for i in range(len(csvdata)):
    
     print(len(csvdata), "--------", image_id_1, "--------", match)
    
-
+    thismatchnum = 0
     #GOES THROUGH EVERY LINE IN THE IMAGE
     for j in range(len(current["3D"])):
         data1_line3D = current["3D"][j]
@@ -105,6 +107,7 @@ for i in range(len(csvdata)):
                     # print(image_id_2)
                     # print(data2_line3D)
                     match = match + 1
+                    thismatchnum = thismatchnum + 1
                     
                     data_row = {
                             'data1_imageid': image_id_1,
@@ -123,11 +126,16 @@ for i in range(len(csvdata)):
                         }
 
                     data_to_save.append(data_row)
+
+            if(thismatchnum in allmachnum):
+                allmachnum[thismatchnum] = allmachnum[thismatchnum] + 1
+            else:
+                allmachnum[thismatchnum] = 1
                 
 
 
 
-                        
+print(allmachnum)                      
 
 
 output_data = {
