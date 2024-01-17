@@ -6,362 +6,341 @@ import math
 import matplotlib.pyplot as plt
 import scipy.io as sio
 import csv
+import cv2
 
 #INPUT
 #data = scipy.io.loadmat('/Users/timeanemet/Desktop/CNN/matfiles/subset_data.mat')
 #data = scipy.io.loadmat("/home/bence/madTables/osszesitett.mat")
-data = scipy.io.loadmat("/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/new_osszesitett_2.mat")
-#data = scipy.io.loadmat("/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/new_osszesitett_2.mat")
+#data = scipy.io.loadmat("/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/new_osszesitett_2.mat")
+data = scipy.io.loadmat("/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/new_osszesitett_2.mat")
 
 #OUTPUT
-filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data.csv'
-#filename = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data.csv'
+#filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data.csv'
+filename = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data.csv'
 
 keys = data.keys()
-
-# Access the data structure
 osszesitett_data = data['new_osszesitett_2']
 
 
-data_to_save = []
-imglines = []
-img3dlines = []
+imagename = "0000000035"
+imgname = "0000_" + imagename
+# imagepath = f'/project/Datasets/KITTI_360/2013_05_28_drive_0000_sync/image_00/data_rect/{imagename}.png'
+# imagesavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/CODES/TEST/IMAGES/LINES/cutted_here{imagename}.png'
+imagesavepath = f'/Volumes/TIMKA/NEW_CNN/RGVC_DataGeneration_CODES/CODES/TEST/IMAGES/CUTTEST/'
+
+
+smallImageSize = 376
+BigImageWidth = 1408
+BigImageHeight = 376
+
+
+def newlinedata(cuttedhere, alllines, lines_3d):
+    newlinesdata = []
+    new3ddata = []
+    neworigdata = []
+    newlines3ddata = []
+    newlinesorigdata = []
+    newlinedata = []
+    size = 0
+    treshold = 15
+    
+    for cuts in cuttedhere:
+        start = cuts[0]
+        end = cuts[1]
+        for i in range (len(alllines)):
+            newline = [0] * 4
+            line = alllines[i]
+            xstart = line[0]
+            xend = line[2]
+            #CASE1
+            if(xstart > start and xend < end):
+                newline[0] = line[0] - start
+                newline[2] = line[2] - start
+                newline[1] = line[1]
+                newline[3] = line[3]
+                size = newline[2] - newline[0]
+                if(size > treshold):
+                    newlinedata.append(newline)
+                    new3ddata.append(lines_3d[i])
+                    neworigdata.append(alllines[i])
+            #CASE2
+            elif(xend < end and xend > start):
+                newline[0] = 0
+                newline[2] = line[2] - start
+                newline[1] = line[1]
+                newline[3] = line[3]
+                size = newline[2] - newline[0]
+                if(size > treshold):
+                    newlinedata.append(newline)
+                    new3ddata.append(lines_3d[i])
+                    neworigdata.append(alllines[i])
+            #CASE3
+            elif(xstart < end and xstart > start):
+                newline[0] = line[0] - start
+                newline[2] = smallImageSize
+                newline[1] = line[1]
+                newline[3] = line[3]
+                size = newline[2] - newline[0]
+                if(size > treshold):
+                    newlinedata.append(newline)
+                    new3ddata.append(lines_3d[i])
+                    neworigdata.append(alllines[i])
+        newlinesdata.append(newlinedata)
+        newlinedata = []
+        newlines3ddata.append(new3ddata)
+        newlinesorigdata.append(neworigdata)
+        new3ddata = []
+        neworigdata = []
+
+    return newlinesdata, newlines3ddata, newlinesorigdata
+                
+
+
+def arrangelines(allines):
+    for i in range(len(allines)):
+        if(allines[i][2]<allines[i][0]):
+            segedX = allines[i][0]
+            allines[i][0] = allines[i][2]
+            allines[i][2] = segedX
+
+            segedY  = allines[i][1]
+            allines[i][1] = allines[i][3]
+            allines[i][3] = segedY
+            
+    return allines
+
+
+
+
+def drawsmallblackimage(new2dlines, imagesavepath, size):
+    index = 0
+    for image in new2dlines:
+        index = index+1
+        img = np.zeros((size, size, 3), np.uint8)
+        for line in image:
+        # Define the coordinates of the line
+            x1, y1, x2, y2 = line[0], line[1], line[2], line[3]
+            # Draw the line on the image
+            img = cv2.line(img, (int(x1), int(y1)), (int(x2), int(y2)), (255, 255, 255), 3)
+        # Display the image
+        imagesavepath2 = imagesavepath + imagename+ "_" +str(size)+ "_" + str(index) + ".png"
+        cv2.imwrite(imagesavepath2, img)
+
+
+def drawbigimage(lines2d, imagesavepath):
+    img = np.zeros((376, 1408, 3), np.uint8)
+    for line in lines2d:
+        x1, y1, x2, y2 = line[0], line[1], line[2], line[3]
+            # Draw the line on the image
+        img = cv2.line(img, (int(x1), int(y1)), (int(x2), int(y2)), (255, 255, 255), 3)
+    
+    imagesavepath2 = imagesavepath + imagename + ".png"
+    cv2.imwrite(imagesavepath2, img)
+
+
+
+
+def resizeto512(lines2d):
+    orig_width = 376
+    orig_height = 376
+    new_width = 512
+    new_height = 512
+
+    alllines_512 = []
+    lines_512 = []
+
+    for image in lines2d:
+        for line in image:
+            new_x1 = (line[0] / orig_width) * new_width
+            new_y1 = (line[1] / orig_height) * new_height
+            new_x2 = (line[2] / orig_width) * new_width
+            new_y2 = (line[3] / orig_height) * new_height
+            new_coordinates = [new_x1, new_y1, new_x2, new_y2]
+            lines_512.append(new_coordinates)
+        alllines_512.append(lines_512)
+        lines_512 = []
+    
+    return alllines_512
+
+
+def segmentstocutted(allsegment):
+
+    smallImageStart = 0
+    smallImageEnd = 0
+    cuttedhere = []
+    
+    for segment in allsegment:
+        start = segment[0]
+        end = segment [1]
+        size = segment[2]
+        if(size <= smallImageSize):
+            middle = start + (smallImageSize/2)
+            if(start - (smallImageSize/2) < 0):
+                smallImageStart = 0
+                smallImageEnd = smallImageSize
+            elif(end + (smallImageSize/2) > BigImageWidth):
+                smallImageStart = BigImageWidth-smallImageSize
+                smallImageEnd = BigImageWidth
+            else:
+                smallImageStart = middle - (smallImageSize/2)
+                smallImageEnd = middle + (smallImageSize/2)
+
+            smallImageStart = int(smallImageStart)
+            smallImageEnd = int(smallImageEnd)
+            cuttedhere.append([smallImageStart,smallImageEnd])
+        else:
+            # we will create two images where they overlap
+            smallImageStart = start
+            smallImageEnd = start + smallImageSize
+
+            smallImageStart = int(smallImageStart)
+            smallImageEnd = int(smallImageEnd)
+            cuttedhere.append([smallImageStart,smallImageEnd])
+
+            smallImageStart = end - smallImageSize
+            smallImageEnd = end
+
+            smallImageStart = int(smallImageStart)
+            smallImageEnd = int(smallImageEnd)
+            cuttedhere.append([smallImageStart,smallImageEnd])
+
+    return cuttedhere
+
+
+def pushdowntosegments(pusheddown):
+
+    #start,end,size
+    segments = [0] * 3
+    allsegment = []
+    size = 0
+    for i in range(len(pusheddown)):
+        if(pusheddown[i] == 1):
+            if(pusheddown[i-1] == 0):
+                segments[0] = i
+            size = size+1
+
+        if (pusheddown[i] == 0):
+            if(size != 0):
+                segments[2] = size
+                segments[1] = i
+                allsegment.append(segments)
+                segments = [0] * 3
+                size = 0
+    return allsegment
+
+
+
+def newimageids(cuttedhere, image_id_1):
+    imageidlist = []
+
+    for i in range(len(cuttedhere)):
+        count = i+1
+        newimageid = image_id_1 + "_"+ str(count)
+        imageidlist.append(newimageid)
+    
+    return imageidlist
+
+
+
+
+
 data = {}
+all3dlines = []
 dataarray = []
-lines_2D = []
-lines_3D = []
-newdataarray = []
-maxcuts = 0
-maximage = ""
-imagenumberBIG = {}
+alllines =  []
+
+
 
 for i in range(len(osszesitett_data)):
-    print(len(osszesitett_data), "---------", i, len(osszesitett_data[i][1]))
+    if(i%100 == 0):
+        print(len(osszesitett_data), "-------", i)
     image_id_1 = str(osszesitett_data[i][0][0])  # Convert to string
-    imglines = []
-
-
-    
+    pusheddown = [0] * BigImageWidth
+    # if image_id_1 != imgname:
+    #     continue
     for j in range(len(osszesitett_data[i][1])):
         lines = osszesitett_data[i][1][j].flatten().tolist()
         lines3d = osszesitett_data[i][2][j].flatten().tolist()
-        imagenumberBIG[image_id_1] = j + 1
+        alllines.append(lines)
+        all3dlines.append(lines3d)
 
-
-        
-        lines_2D.append(lines)
-        lines_3D.append(lines3d)
-        
-
-        imglines.append(lines)
-        
-
-    data["ID"] = image_id_1
-    data["2D"] = lines_2D
-    data["3D"] = lines_3D
-
-    lines_2D = []
-    lines_3D = []
-    
-    dataarray.append(data)
-
-
-    data= {}
-           
-    lines = imglines
-
-
-    # Converting the list of lists to a list of dictionaries
-    lines_with_keys = [{'x1': line[0], 'y1': line[1], 'x2': line[2], 'y2': line[3]} for line in lines]
-
-    # Make them in order
-    for lines in lines_with_keys:
-        if(lines["x2"] < lines["x1"]):
-            seged = lines["x1"]
-            lines["x1"] = lines["x2"]
-            lines["x2"] = seged
-
-            seged = lines["y1"]
-            lines["y1"] = lines["y2"]
-            lines["y2"] = seged
-
-
-    # Sort based on 'x1' value
-    lines_with_keys = sorted(lines_with_keys, key=lambda line: line['x1'])
-
-    smallimgsize=376
-    img_width = 1408
-    img_height = 376
-
-    
-
-
-
-    for line in lines_with_keys:
-        line["x1"] = math.floor(line["x1"])
-        line["x2"] = math.ceil(line["x2"])
-
-        if(line["y1"] < line["y2"]):
-            line["y1"] = math.floor(line["y1"])
-            line["y2"] = math.ceil(line["y2"])
+        if (lines[0] <= lines[2]):
+            linestart = math.floor(lines[0])
+            lineend = math.ceil(lines[2])
         else:
-            line["y2"] = math.floor(line["y2"])
-            line["y1"] = math.ceil(line["y1"])
+            linestart = math.floor(lines[2])
+            lineend = math.ceil(lines[0])
+
+        for k in range(linestart, lineend):
+            pusheddown[k] = 1
 
 
+    #We Have pusheddown which represents the image with 1 and 0 pushed down on the y axis
 
-    onesarray = [0] * img_width
+    allsegment = pushdowntosegments(pusheddown)
+    cuttedhere = segmentstocutted(allsegment)
+    alllines = arrangelines(alllines)
+    #drawbigimage(alllines,imagesavepath)
+    new2dlines, new3dlines, neworiglines = newlinedata(cuttedhere, alllines, all3dlines)
+    #drawsmallblackimage(new2dlines, imagesavepath, 376)
+    new512lines = resizeto512(new2dlines)
+    #drawsmallblackimage(new512lines, imagesavepath, 512)
 
-    for line in lines_with_keys:
-        for j in range(line["x1"], line["x2"]):
-            onesarray[j] = onesarray[j] + 1
-
-    linesegarray = []
-    linesegments = {}
-
-    
-    
-
-    k = 0
-    while k < len(onesarray):
-        if onesarray[k] != 0:
-            linesegments = {"x1": k}
-            while k < len(onesarray) and onesarray[k] != 0:
-                k += 1
-            linesegments["x2"] = k - 1  # Subtract 1 to get the endpoint
-            linesegarray.append(linesegments)
-        else:
-            k += 1
-
-    cutpoints = {}
-    cutpointsarray = []
-
-    
+    # Save them as the small images 
+    new_imageid = newimageids(cuttedhere, image_id_1)
 
 
-    
+    for i in range(len(cuttedhere)):
+        data["ID"] = new_imageid[i]
+        data["2D_orig"] = neworiglines[i]
+        data["2D_376"] = new2dlines[i]
+        data["2D_512"] = new512lines[i]
+        data["3D"] = new3dlines[i]
+        data["cuttedhere"] = cuttedhere[i]
+        dataarray.append(data)
+        data= {}
 
-    for line in linesegarray:
-        segmentlength = line["x2"] - line["x1"]
-        if(segmentlength < 376):
-            middle = line["x1"] + math.ceil(segmentlength/2)
-            cutpoints = {"start": middle - 188, "end": middle + 188}
+    alllines = []
+    all3dlines = []
 
-            if(cutpoints["start"] < 0):
-                cutpoints["start"] = 0
-                cutpoints["end"] = 376
-
-            if(cutpoints["end"] > 1408):
-                cutpoints["end"] = 1408
-                cutpoints["start"] = 1408-376
-            cutpointsarray.append(cutpoints)
-        else:
-            cutpoints = {"start": line["x1"], "end": line["x1"]+376}
-            cutpointsarray.append(cutpoints)
-            cutpoints = {"start": line["x2"] - 376, "end": line["x2"]}
-
-            if(cutpoints["start"] < 0):
-                cutpoints["start"] = 0
-                cutpoints["end"] = 376
-
-            if(cutpoints["end"] > 1408):
-                cutpoints["end"] = 1408
-                cutpoints["start"] = 1408-376
-
-            cutpointsarray.append(cutpoints)
-
-
-    arrayseg = [0] * 2
-    savearray = []
-
-    for lines in cutpointsarray:
-        
-        arrayseg[0] = lines["start"]
-        arrayseg[1] = lines["end"]
-        savearray.append(arrayseg)
-        arrayseg = [0] * 2 # Reset arrayseg for the next iteration
-
-    
-
-    # if(maxcuts < len(savearray)):
-    #     maxcuts = len(savearray)
-    #     maximage = image_id_1
-
-    list = dataarray[i]
-
-    
-    segedarray = dataarray[i].copy()
-    linesinimage_2D = []
-    linesinimage_3D = []
-    linesinimage_2D_original = []
-    newdata = {}
-    numberofimages = 1
-
-
-    LINE_2D = segedarray["2D"]
-
-    for cuts in savearray:
-        start = cuts[0]
-        end = cuts[1]
-        for lines in LINE_2D[:]:
-            x1 = lines[0]
-            y1 = lines[1]
-            x2 = lines[2]
-            y2 = lines[3]
-
-            if(x1 < end):
-                x1 = x1-start
-                x2 = x2-start
-                newline = (x1,y1,x2,y2)
-                linein3D = segedarray["3D"][segedarray["2D"].index(lines)]
-                linesinimage_3D.append(linein3D)
-                linesinimage_2D.append(newline)
-                linesinimage_2D_original.append(lines)
-                if(x2<end-start):
-                    LINE_2D.remove(lines)
-                    segedarray["3D"].remove(linein3D)
-                
-                
-        if linesinimage_2D != []:
-            newname = image_id_1 + "_" + str(numberofimages)
-            newdata["ID"] = newname
-            newdata["2D"] = np.array(linesinimage_2D)
-            newdata["2D_orig"] = np.array(linesinimage_2D_original)
-            newdata["3D"] = np.array(linesinimage_3D)
-            newdata["cutedhere"] = np.array(cuts)
-            newdataarray.append(newdata)
-            newdata = {}
-            linesinimage_2D = []
-            linesinimage_3D = []
-            linesinimage_2D_original = []
-            numberofimages = numberofimages + 1
-
-
-
-# atlag = 0
-# max = 0
-# maxname = []
-# min = 10000
-# minname = []
-# count = 0
-# ossz = 0
-
-# linenumbers = {}
-
-# for data in imagenumberBIG:
-#     number = imagenumberBIG[data]
-#     key = number
-#     if(key in linenumbers):
-#         linenumbers[key] = linenumbers[key] + 1
-#     else:
-#         linenumbers[key] = 1
-
-
-
-#     count = count+1
-#     ossz = ossz + number
-#     if(number >= max):
-#         max = number
-#         if max == 38:
-#             maxname.append(data)
-#     if(number <= min):
-#         min = number
-#         if min == 1:
-#             minname.append(data)
-       
-# print("ATLAG: ", ossz/count)
-# print("MIN: ",min )
-# print("How many have min: ", len(minname))
-# print("MAX: ",max )
-# print("MAXNAME: ", maxname)
-# print("OSSZ: ", ossz)
-# print("COUNT: ", count)
-
-
-# for data in linenumbers:
-#     print("-------------------")
-#     print(data)
-#     print("--")
-#     print(linenumbers[data])
-    
-
-# xaxis = []
-# for i in sorted(linenumbers.keys()):
-#         print(i, end=" ")
-#         xaxis.append(i)
-# bar = plt.bar(linenumbers.keys(), linenumbers.values())
-# # Import pyplot again to ensure xticks has not been overwritten
-# import matplotlib.pyplot as plt
-# # Set x-ticks to be every key in your dictionary
-# plt.xticks(xaxis)
-# # Add data labels
-# for ba in bar:
-#     yval = ba.get_height()
-#     plt.text(ba.get_x() + ba.get_width()/2.0, yval, int(yval), va='bottom') # va: vertical alignment
-# # Show the plot
-# plt.show()
-
-# linnumbers = 0 
-# linesincutted = {}
-# max = 0
-# min = 10000
-# ossz = 0
-# count = 0
-
-
-# for data in newdataarray:
-#     count = count +1
-#     name = data["ID"]
-#     key = len(data["2D"])
-#     ossz = ossz + key
-#     if(key in linesincutted):
-#         linesincutted[key] = linesincutted[key] + 1
-#     else:
-#         linesincutted[key] = 1
-#     if(key < min ):
-#         min = key
-#     if(key > max):
-#         max = key
-#         maximage = name
-
-# for data in linesincutted:
-#     print("-------------------")
-#     print(data)
-#     print("--")
-#     print(linesincutted[data])
-    
-
-# xaxis = []
-# for i in sorted(linesincutted.keys()):
-#         print(i, end=" ")
-#         xaxis.append(i)
-# bar = plt.bar(linesincutted.keys(), linesincutted.values())
-# # Import pyplot again to ensure xticks has not been overwritten
-# import matplotlib.pyplot as plt
-# # Set x-ticks to be every key in your dictionary
-# plt.xticks(xaxis)
-# # Add data labels
-# for ba in bar:
-#     yval = ba.get_height()
-#     plt.text(ba.get_x() + ba.get_width()/2.0, yval, int(yval), va='bottom') # va: vertical alignment
-# # Show the plot
-# plt.show()
-
-
-
+   
 
 
 def write_data_to_csv(data_array, filename):
     with open(filename, 'w', newline='') as csvfile:
-        fieldnames = ['ID', '2D', '2D_orig', '3D', 'cutedhere']
+        fieldnames = ['ID', '2D_orig', '2D_376', '2D_512',  '3D', 'cuttedhere']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for data in data_array:
             writer.writerow(data)
 
-# Replace this line with the actual name of your CSV file
 
 
 
-write_data_to_csv(newdataarray, filename)
+write_data_to_csv(dataarray, filename)
+
+
+    
+
+
+
+    
+
+
+
+
+            
+            
+
+
+        
+
+    
+    
+            
+        
+
+
+
+
 
