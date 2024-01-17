@@ -53,7 +53,7 @@ def read_csv(file_path):
     
 
 csvdata = read_csv(file_path)
-
+data_to_save = []
 
 for i in range(len(csvdata)):  
     csvdata[i] = csvdata[i][0]
@@ -73,9 +73,10 @@ match = 0
 # GOES THROUGH EVERY SMALL IMAGE
 for i in range(len(csvdata)):
     current = csvdata[i]
-    if(i%100 == 0):
-        print(len(csvdata), "--------", i, "--------", match)
     image_id_1 = str(current["ID"])
+   
+    print(len(csvdata), "--------", image_id_1, "--------", match)
+   
 
     #GOES THROUGH EVERY LINE IN THE IMAGE
     for j in range(len(current["3D"])):
@@ -84,7 +85,7 @@ for i in range(len(csvdata)):
 
 
         #Go Through every image every line to see if there is mach
-        for k in range(len(csvdata)):
+        for k in range(i, len(csvdata)):
             mach_current = csvdata[k]
             image_id_2 = str(mach_current["ID"])
 
@@ -97,6 +98,12 @@ for i in range(len(csvdata)):
                 data2_line3D = mach_current["3D"][l]
 
                 if np.array_equal(data1_line3D, data2_line3D):
+
+                    # print("##########################")
+                    # print(image_id_1)
+                    # print(data1_line3D)
+                    # print(image_id_2)
+                    # print(data2_line3D)
                     match = match + 1
                     
                     data_row = {
@@ -115,4 +122,16 @@ for i in range(len(csvdata)):
                             'data_3D': current["3D"][j]
                         }
 
+                    data_to_save.append(data_row)
+                
 
+
+
+                        
+
+
+output_data = {
+    structname : data_to_save
+}
+
+scipy.io.savemat(filename, output_data,  long_field_names=True, oned_as='column')
