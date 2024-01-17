@@ -13,7 +13,7 @@ file_path = "/Volumes/TIMKA/NEW_CNN/matfiles/data_smallimg.csv"
 #file_path = "/Users/timeanemet/Desktop/CNN/matfiles/data.csv"
 
 #OUTPUT
-#filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Every_data_2.csv'
+filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Every_data_2.csv'
 #filename = '/Users/timeanemet/Desktop/CNN/matfiles/Every_data_2.csv'
 filename = '/Volumes/TIMKA/NEW_CNN/matfiles/Every_data_2.csv'
 
@@ -136,6 +136,7 @@ def RhoCalc(line):
     
 
 def ThetaCalc(line):
+    print(line)
     point1 = (line[0],line[1])
     point2 = (line[2],line[3])
 
