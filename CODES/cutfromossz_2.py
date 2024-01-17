@@ -37,7 +37,9 @@ BigImageHeight = 376
 def newlinedata(cuttedhere, alllines, lines_3d):
     newlinesdata = []
     new3ddata = []
+    neworigdata = []
     newlines3ddata = []
+    newlinesorigdata = []
     newlinedata = []
     size = 0
     treshold = 15
@@ -60,6 +62,7 @@ def newlinedata(cuttedhere, alllines, lines_3d):
                 if(size > treshold):
                     newlinedata.append(newline)
                     new3ddata.append(lines_3d[i])
+                    neworigdata.append(alllines[i])
             #CASE2
             elif(xend < end and xend > start):
                 newline[0] = 0
@@ -70,6 +73,7 @@ def newlinedata(cuttedhere, alllines, lines_3d):
                 if(size > treshold):
                     newlinedata.append(newline)
                     new3ddata.append(lines_3d[i])
+                    neworigdata.append(alllines[i])
             #CASE3
             elif(xstart < end and xstart > start):
                 newline[0] = line[0] - start
@@ -80,12 +84,15 @@ def newlinedata(cuttedhere, alllines, lines_3d):
                 if(size > treshold):
                     newlinedata.append(newline)
                     new3ddata.append(lines_3d[i])
+                    neworigdata.append(alllines[i])
         newlinesdata.append(newlinedata)
         newlinedata = []
         newlines3ddata.append(new3ddata)
+        newlinesorigdata.append(neworigdata)
         new3ddata = []
+        neworigdata = []
 
-    return newlinesdata, newlines3ddata
+    return newlinesdata, newlines3ddata, newlinesorigdata
                 
 
 
@@ -223,7 +230,15 @@ def pushdowntosegments(pusheddown):
 
 
 
+def newimageids(cuttedhere, image_id_1):
+    imageidlist = []
 
+    for i in range(len(cuttedhere)):
+        count = i+1
+        newimageid = image_id_1 + "_"+ str(count)
+        imageidlist.append(newimageid)
+    
+    return imageidlist
 
 
 
@@ -265,24 +280,30 @@ for i in range(len(osszesitett_data)):
     allsegment = pushdowntosegments(pusheddown)
     cuttedhere = segmentstocutted(allsegment)
     alllines = arrangelines(alllines)
-    drawbigimage(alllines,imagesavepath)
-    new2dlines, new3dlines = newlinedata(cuttedhere, alllines, all3dlines)
-    drawsmallblackimage(new2dlines, imagesavepath, 376)
+    #drawbigimage(alllines,imagesavepath)
+    new2dlines, new3dlines, neworiglines = newlinedata(cuttedhere, alllines, all3dlines)
+    #drawsmallblackimage(new2dlines, imagesavepath, 376)
     new512lines = resizeto512(new2dlines)
-    drawsmallblackimage(new512lines, imagesavepath, 512)
+    #drawsmallblackimage(new512lines, imagesavepath, 512)
 
-    data["ID"] = image_id_1
-    data["2D_orig"] = alllines
-    data["2D_376"] = new2dlines
-    data["2D_512"] = new512lines
-    data["3D"] = all3dlines
-    data["cuttedhere"] = cuttedhere
+    # Save them as the small images 
+    new_imageid = newimageids(cuttedhere, image_id_1)
+
+
+    for i in range(len(cuttedhere)):
+        data["ID"] = new_imageid[i]
+        data["2D_orig"] = neworiglines[i]
+        data["2D_376"] = new2dlines[i]
+        data["2D_512"] = new512lines[i]
+        data["3D"] = new3dlines[i]
+        data["cuttedhere"] = cuttedhere[i]
+        dataarray.append(data)
+        data= {}
 
     alllines = []
     all3dlines = []
 
-    dataarray.append(data)
-    data= {}
+   
 
 
 def write_data_to_csv(data_array, filename):
