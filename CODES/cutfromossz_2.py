@@ -12,11 +12,11 @@ import cv2
 #data = scipy.io.loadmat('/Users/timeanemet/Desktop/CNN/matfiles/subset_data.mat')
 #data = scipy.io.loadmat("/home/bence/madTables/osszesitett.mat")
 #data = scipy.io.loadmat("/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/new_osszesitett_2.mat")
-data = scipy.io.loadmat("/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/new_osszesitett_2.mat")
+#data = scipy.io.loadmat("/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/new_osszesitett_2.mat")
 
 #OUTPUT
-#filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data.csv'
-filename = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data.csv'
+filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data.csv'
+#filename = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data.csv'
 
 keys = data.keys()
 osszesitett_data = data['new_osszesitett_2']

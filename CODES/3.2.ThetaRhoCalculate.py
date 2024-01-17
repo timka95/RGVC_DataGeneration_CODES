@@ -8,14 +8,14 @@ import scipy.io
 import ast
 
 #INPUT
-#file_path = "/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data.csv"
-file_path = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data.csv'
+file_path = "/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data.csv"
+#file_path = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/data.csv'
 #file_path = "/Users/timeanemet/Desktop/CNN/matfiles/data.csv"
 
 #OUTPUT
-#filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Every_data_2.csv'
+filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Every_data_2.csv'
 #filename = '/Users/timeanemet/Desktop/CNN/matfiles/Every_data_2.csv'
-filename = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/Every_data_2.csv'
+#filename = '/Volumes/TIMKA/NEW_CNN/Data_Generation/Matfiles/Every_data_2.csv'
 
 image_x = 512
 image_y = 512
@@ -136,6 +136,7 @@ def RhoCalc(line):
     
 
 def ThetaCalc(line):
+    print(line)
     point1 = (line[0],line[1])
     point2 = (line[2],line[3])
 
