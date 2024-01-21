@@ -6,30 +6,25 @@ import matplotlib.pyplot as plt
 import scipy.io as sio
 import csv
 
-# WAGNER
-# data = scipy.io.loadmat('/project/ntimea/l2d2/IMAGE_PAIR_GT/matlab/cutted_pairs.mat')
-# savemathere = 'project/ntimea/l2d2/IMAGE_PAIR_GT/matlab/batches.mat'
-# savecsvhere = 'project/ntimea/l2d2/IMAGE_PAIR_GT/matlab/batches.csv'
-# data_cutted_pairs = data['data2']
 
-data = scipy.io.loadmat('/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data_cutted_pairs_Everything_2.mat')
-data_cutted_pairs = data['Everything_2']
-savemathere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/batches.mat'
-savecsvhere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/batches.csv'
+#INPUT
+# file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Everything_2.mat'
+# structname = 'Everything_2'
+file_path = '/Volumes/TIMKA/NEW_CNN/matfiles/Everything_2.mat'
+structname = 'Everything_2'
 
 
 
+#OUTPUT
+# savemathere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches.mat'
+# savecsvhere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches.csv'
+savemathere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches.mat'
+savecsvhere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches.csv'
 
-# MINE
-# data = scipy.io.loadmat("/Users/timeanemet/Desktop/CNN/matfiles/cutted_pairs.mat")
-# savemathere = '/Users/timeanemet/Desktop/CNN/matfiles/batches.mat'
-# savecsvhere = '/Users/timeanemet/Desktop/CNN/matfiles/batches.csv'
-# data_cutted_pairs = data['cutted_pairs']
 
-# data = scipy.io.loadmat("/Volumes/ADATA_HDD/NEW_CNN/matfiles/cutted_pairs.mat")
-# savemathere = '/Volumes/ADATA_HDD/NEW_CNN/matfiles/batches.mat'
-# savecsvhere = '/Volumes/ADATA_HDD/NEW_CNN/matfiles/batches.csv'
-# data_cutted_pairs = data['cutted_pairs']
+data = scipy.io.loadmat(file_path)
+data_cutted_pairs = data[structname]
+
 
 
 # FOR WAGNER ITS data2 OTHERWISE cutted_pairs
