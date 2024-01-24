@@ -17,23 +17,55 @@ import cv2
 import math
 
 
+#INPUT
+input_image_path= "/Volumes/TIMKA/NEW_CNN/Images/Kitti360_cuttedGT_512/0000_0000000001_1.png"
+inputcsv_path = "/Volumes/TIMKA/NEW_CNN/matfiles/Every_data_2.csv"
+
+
 
 # ####################################HT########################################################
-def hough_transform(rows, cols, theta_res, rho_res):
+def hough_transform( rows_orig, cols_orig, rows_hough, cols_hough, theta_res, rho_res, input_image_path ):
+
+    r = rows_orig
+    c = cols_orig
+    h = rows_hough
+    w = cols_hough  
+
+    norm = max(r, c)
+
+    # Load your binary input image (replace 'input_image_path' with the actual path)
+    input_image_path = input_image_path
+
+
+    binary_image = np.array(Image.open(input_image_path).convert("L"))
+    binary_image[binary_image != 0] = 1  # Convert non-zero values to 1
+    
+    # Create a PyTorch tensor from the binary image
+    image = torch.tensor(binary_image).unsqueeze(0).float()
+
+    image_shape = image.size()
+    image = image.unsqueeze(0)
+
+        
+        
+    batch, channel, _, _ = image.size()
+
+    image = image.view(batch,channel, -1).view(batch*channel, -1)
+
+    image = F.relu(image)
+
+
     theta = np.linspace(0, 180.0, int(np.ceil(180.0 / theta_res) + 1.0))
-    theta_SIZE = len(theta)
     theta = theta[0:len(theta) - 1]
-    theta_SIZE = len(theta)
 
-    ###  Actually,the offset does not have to be this large, because the origin is located at the image center.
-    D = np.sqrt((rows - 1) ** 2 + (cols - 1) ** 2)
-    ###  replace the line above to reduce unnecessray computation (significantly).
-    # D = np.sqrt((rows/2) ** 2 + (cols/2) ** 2)
-
+    D = np.sqrt((rows_orig/2) ** 2 + (cols_orig/2) ** 2)-1
+    #D = np.sqrt((rows - 1) ** 2 + (cols - 1) ** 2)
+    
     q = np.ceil(D / rho_res)
-    nrho = 2 * q + 1
+    #nrho = 182
+    nrho = 728
+    #nrho = 2 *q + 1
     rho = np.linspace(-q * rho_res, q * rho_res, int(nrho))
-    rho_SIZE = len(rho)
 
     w = np.size(theta)
     h = np.size(rho)
@@ -41,213 +73,77 @@ def hough_transform(rows, cols, theta_res, rho_res):
     sin_value = np.sin(theta * np.pi / 180.0).astype(np.float32)
     sin_cos = np.concatenate((sin_value[None, :], cos_value[None, :]), axis=0)
 
-    ###  This is much more memory-efficient by shifting the coordinate ####
-    coords_r, coords_w = np.ones((rows, cols)).nonzero()
-    coords = np.concatenate((coords_r[:, None], coords_w[:, None]), axis=1).astype(np.float32)
 
-    coords[:, 0] = rows - coords[:, 0] - rows // 2
-    coords[:, 1] = coords[:, 1] + 1 - cols // 2
+    coords_r, coords_w = np.ones((rows_orig, cols_orig)).nonzero()
+    coords = np.concatenate((coords_r[:,None], coords_w[:,None]), axis=1).astype(np.float16)
 
-    vote_map = (coords @ sin_cos).astype(np.float32)
+    
+    coords[:,0] = rows_orig-coords[:,0]-rows_orig//2
+    coords[:,1] = coords[:,1] +1 - cols_orig//2
 
+    vote_map = (coords @ sin_cos).astype(np.float16)
     print("FOR START", datetime.datetime.now())
 
-    vote_index = np.zeros((rows * cols, h, w))
-    for i in range(rows * cols):
-        if(i % 100 == 0):
-            print(rows * cols, "--------", i)
+
+    hough_space = np.zeros((h * w))
+    for i in range(rows_orig * cols_orig):
+        if( int(image[0,i]) == 0):
+            continue
         for j in range(w):
             rhoVal = vote_map[i, j]
-            rhoIdx = np.nonzero(np.abs(rho - rhoVal) == np.min(np.abs(rho - rhoVal)))[0]
-            vote_map[i, j] = float(rhoIdx[0])
-            vote_index[i, rhoIdx[0], j] = 1
-
-    print("FOR END", datetime.datetime.now())
-
-    vote_index_SIZE = vote_index.shape
-    ### remove all-zero lines in the HT maps ####
-    vote_rho_idx = vote_index.reshape(rows * cols, h, w).sum(axis=0).sum(axis=1)
-    # vote_rho_idx_SIZE=vote_rho_idx.size()
-    vote_index_SIZE = vote_index.shape
-    vote_index = vote_index[:, vote_rho_idx > 0.0, :]
-    vote_index_SIZE = vote_index.shape
-    # vote_index_SIZE = vote_index.shape
-    ### update h, since we remove those HT lines without any votes
-    ### slightly different from the original paper, the HT size in this script is 182x60.
-    h = (vote_rho_idx > 0.0).sum()
-    vote_index_SIZE = vote_index.shape
-    result = vote_index.reshape(rows, cols, h, w)
-    vote_index_SIZE = result.shape
-    
-
-    
-
-    return result
-
-
-
-
-
-
-# Create a blank image with a white background
-width, height = 128, 128
-image = Image.new('RGB', (width, height), (0,0,0))
-draw = ImageDraw.Draw(image)
-
-
-#[633.737000000000,205.220000000000,133.070000000000,374.207000000000]
-
-point1 = (132.996000000000,14.867000000000)
-point2 = (45.987000000000,57.565000000000)
-
-# middle = (64,64)
-
-x1, y1 = point1
-x2, y2 = point2
-
-# Angle in degrees by which to rotate the line
-rotation_angle_degrees = 0
-
-# Calculate the rotation angle in radians
-rotation_angle_radians = math.radians(rotation_angle_degrees)
-
-# Calculate the coordinates of the new endpoints
-i = int((x1 - 64) * math.cos(rotation_angle_radians) - (y1 - 64) * math.sin(rotation_angle_radians) + 64)
-j = int((x1 - 64) * math.sin(rotation_angle_radians) + (y1 - 64) * math.cos(rotation_angle_radians) + 64)
-x = int((x2 - 64) * math.cos(rotation_angle_radians) - (y2 - 64) * math.sin(rotation_angle_radians) + 64)
-y = int((x2 - 64) * math.sin(rotation_angle_radians) + (y2 - 64) * math.cos(rotation_angle_radians) + 64)
-
-print("new coordinates", i, "," ,j, " ", x, "," ,y )
-
-
-# Define coordinates for the lines
-lines = [
-   ((i,j),(x,y)) 
-]
-
-# Draw the lines on the image
-line_color = (255, 255, 255)  # Black
-for line in lines:
-    draw.line(line, fill=line_color, width=2)
-
-pathi = f'{i}_{j}__{x}_{y}.png'
-path = f'/Users/timeanemet/Desktop/CNN/l2d2-main_2/Pictures/Coordinate/125_'+pathi
-image.save(path)
-
-print("START", datetime.datetime.now())
-# Default settings for hough_transform
-vote_index = hough_transform(rows=128, cols=128, theta_res=3, rho_res=1)
-
-
-#loading vote index instead of calculating
-#vote_index = np.load('vote_index.npy')
-
-
-vote_index = torch.from_numpy(vote_index).float().contiguous()
-
-
-# Load your binary input image (replace 'input_image_path' with the actual path)
-input_image_path = path
-#input_image_path = "/Users/timeanemet/Desktop/CNN/l2d2-main_2/Pictures/Ered128/004422_1.png"
-
-
-
-class HT(nn.Module):
-    def __init__(self, vote_index):
-        super(HT, self).__init__()
-        self.r, self.c, self.h, self.w = vote_index.size()  # Use .shape instead of .size()
-        self.norm = max(self.r, self.c)
-        SHAPE = vote_index.size()
-        vote_type = type(vote_index)
-        self.vote_index = vote_index.view(self.r * self.c, self.h * self.w)
-        self.total = vote_index.sum(0).max()
-
-    def forward(self, image):
-        image_shape = image.size()
-        image = image.unsqueeze(0)
-
-        batch, channel, _, _ = image.size()
-
-        image = image.view(batch, channel, -1).view(batch * channel, -1)
-
-        image_shape = image.size()
-        vote_index_shape = self.vote_index.size()
-        image = F.relu(image)
-
-
-        print(image.size(), self.vote_index.size())
-        HT_map = image @ self.vote_index
-
-
-
-
-        HT_map = HT_map / self.norm  # Removed self.total normalization
-        HT_map = HT_map.view(batch, channel, -1).view(batch, channel, self.h, self.w)
-
+            rhoIdx = np.argmin(np.abs(rho - rhoVal))  # Use argmin instead of nonzero
+            new_j = rhoIdx * w + j
+            #vote_index[i, new_j] = 1 
+            image_num = int(image[0,i])
+            hough_num = hough_space[new_j]
+            #hough_space[new_j] = hough_space[new_j] + image[i]
+            hough_space[new_j] = hough_space[new_j] + image_num 
         
-        return HT_map
+    print("FOR END", datetime.datetime.now())
+    #result = (vote_index.reshape(rows_orig*cols_orig, w*h))
 
-input_image = Image.open(input_image_path)
+    
+    #HOUGH_SIZE = hough_space.size()
+    hough_space = hough_space / norm
+    hough_space = torch.tensor(hough_space).view(1, -1)
 
-# Convert the image to grayscale mode
-grayscale_image = input_image.convert('L')
+    hough_space = hough_space.view(batch, channel, -1).view(batch, channel, h, w)
+    #ht_image_np = hough_space.squeeze().detach().numpy()
+    ht_image_np = hough_space
+    hough_space_TYPE = hough_space.type()
+    hough_space_SHAPE = hough_space.size()
 
-# Convert the grayscale image to a NumPy array
-binary_image = np.array(grayscale_image)
+    ht_image_np = hough_space.squeeze().detach().numpy()
 
-# Create a PyTorch tensor from the binary image
-image_tensor = torch.tensor(binary_image).unsqueeze(0).float()  # Convert to float32 tensor
+    # Normalize Hough Transform values to [0, 255] and convert to uint8
 
-ht_module = HT(vote_index)
+    # Assuming ht_image_np is your 2D numpy array
+    min_value = np.min(ht_image_np)
+    max_value = np.max(ht_image_np)
 
-# Calculate the Hough Transform image using the HT module
-ht_image = ht_module(image_tensor)
-
-# Convert the Hough Transform image to a NumPy array
-ht_image_np = ht_image.squeeze().detach().numpy()
-
-print("MINMAX")
-print(np.min(ht_image_np))
-print(np.max(ht_image_np))
-
-min_value = np.min(ht_image_np)
+    # Perform min-max normalization
+    ht_image_np = (ht_image_np - min_value) / (max_value - min_value) * 255
 
 
-# ht_image_np = (ht_image_np - np.min(ht_image_np)) / (np.max(ht_image_np) - np.min(ht_image_np)) * 255
-# ht_image_np = ht_image_np.astype(np.uint8)
+    #ht_image_np = (ht_image_np - np.min(ht_image_np)) / (np.max(ht_image_np) - np.min(ht_image_np)) * 255
+    ht_image_np = ht_image_np.astype(np.uint8)
 
-# Save the Hough Transform image (replace 'output_image_path' with the desired output path)
-pathi = f'H_{i}_{j}__{x}_{y}.png'
-path = f'/Users/timeanemet/Desktop/CNN/l2d2-main_2/Pictures/Coordinate/'+pathi
-image.save(path)
+    # Save the Hough Transform image (replace 'output_image_path' with the desired output path)
 
 
+    return ht_image_np
 
-
-output_image_path = path
-plt.imsave(output_image_path, ht_image_np, cmap='gray')
-
-print("Hough Transform image saved at:", output_image_path)
-
-print("END", datetime.datetime.now())
-
-
-################# BRIHTEST #################
-
-image = cv2.imread(path)  # Replace 'your_image.jpg' with the path to your image file
-
-max_value = np.max(image)
-brightest_point = np.argwhere(image == max_value)[0]
-
-# Get the color of the brightest point
-color = image[brightest_point[0], brightest_point[1]]
+rows_orig = 512
+cols_orig = 512
+rows_hough = 728
+cols_hough = 240
+theta_res = 0.75
+rho_res = 1
 
 
 
-brightest_points = np.argwhere(image == max_value)
+ht_image = hough_transform( rows_orig, cols_orig, rows_hough, cols_hough, theta_res, rho_res, input_image_path )
+print(ht_image[0][239])
 
-# Print the coordinates of the brightest points
-for point in brightest_points:
-    print(f'({point[1]}, {point[0]})')
 
 
