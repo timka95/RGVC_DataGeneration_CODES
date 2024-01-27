@@ -9,11 +9,8 @@ import ast
 
 #INPUT
 #file_path = "/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/data.csv"
-#file_path = "/Volumes/TIMKA/NEW_CNN/matfiles/data_smallimg.csv"
+file_path = "/Volumes/TIMKA/NEW_CNN/matfiles/data_smallimg.csv"
 #file_path = "/Users/timeanemet/Desktop/CNN/matfiles/data.csv"
-
-#Just to test
-file_path = "/Volumes/TIMKA/NEW_CNN/matfiles/Every_data_2.csv"
 
 #OUTPUT
 #filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Every_data_2.csv'
@@ -51,23 +48,20 @@ def read_csv(file_path):
 
 
 def RhoCalc(line):
-    image_x = 512
-
     point1 = (line[0],line[1])
     point2 = (line[2],line[3])
 
     x1, y1 = point1
     x2, y2 = point2
 
+    #STANDART FORM
 
-    
     if((x2 - x1) == 0):
         m = 180
     else:
         #m = (y2 - y1) / (x2 - x1)
         m = math.atan2(y2 - y1, x2 - x1)
     c = y1 - m * x1
-
 
     # m is the slope and c is the intersection on the y axis
     # print(f"The equation of the line is: y = {m}x + {c}")
@@ -106,18 +100,14 @@ def RhoCalc(line):
    
     distance, intersection = calculate_intersection_and_distance(A, B, C, x0, y0)
 
-    print("distance:", distance)
     distance = round(distance)
 
     if (intersection < image_x/2):
-        rho = Hough_rho/2+distance/angle
+        rho = Hough_rho/2+distance
         rho = math.ceil(rho)
     else:
-        rho = Hough_rho/2-distance/angle
+        rho = Hough_rho/2-distance
         rho = math.ceil(rho)
-
-    # if(Hough_rho/2+distance/angle != Hough_rho/2+distance):
-    #     raise Exception("NOT GOOD,", Hough_rho/2+distance/angle, "    ", Hough_rho/2+distance )
 
     return rho
 
@@ -125,61 +115,6 @@ def RhoCalc(line):
 
 
 
-
-def RhoCalc2 (line):
-
-    point1 = (line[0],line[1])
-    point2 = (line[2],line[3])
-
-    x1, y1 = point1
-    x2, y2 = point2
-
-    # Calculate the slope
-    slope = (y2 - y1) / (x2 - x1)
-    
-    # Calculate the y-intercept
-    intercept = y1 - slope * x1
-
-
-    # SLOPE INTERCEPT FORM y = mx+b
-    #print(f"y = {slope}x + {intercept}")
-
-
-    # Convert the line to standard form: ax + by + c = 0
-    a = -slope
-    b = 1
-    c = -intercept
-
-    #ORIGIN
-    x0 = image_x/2
-    y0 = image_y/2
-
-    # Calculate the distance
-    distance = abs(a*x0 + b*y0 + c) / math.sqrt(a**2 + b**2)
-
-
-
-    #LINE IN THE ORIGIN
-    y0 = image_y/2
-
-    if slope == 0:
-        x0 = 0  # x-coordinate is infinity if the line is horizontal
-    else:
-        x0 = (y0 - intercept) / slope
-    
-    intersection_x = x0
-    intersection_y = y0
-
-    print("Intersection")
-    print(intersection_x, intersection_y)
-
-    rho  = Hough_rho/2+distance
-
-
-
-
-
-    return rho
 
 
 
@@ -207,13 +142,19 @@ def ThetaCalc(line):
     x1, y1 = point1
     x2, y2 = point2
 
+    # Adjacent and Opposite calculated
+    a = abs(x1-x2)
+    o = abs(y1-y2)
 
-        # Calculate the angle in radians
-    angle_radians = math.atan2(y2 - y1, x2 - x1)
+     # To prevent zero division
+    if(a == 0):
+        angle_radians = 0
+    # Calculate the angle in radians
+    else:
+        angle_radians = math.atan(o / a)
 
-    # Convert radians to degrees
+     # Convert radians to degrees
     angle_degrees = math.degrees(angle_radians)
-
 
     # Convert float to int
     plus = math.ceil(angle_degrees)
@@ -223,12 +164,13 @@ def ThetaCalc(line):
     # resi = math.ceil(res * 180 / math.pi)
     # print("RES:", resi)
 
-
-    if((y2 > y1)):
-        theta = math.ceil((Hough_theta/2)+plus)
+    if((x1 > x2 and y2 > y1) or (x2 > x1 and y1 > y2)):
+        theta = math.ceil((Hough_theta/2)+plus/angle)
     else:
-        theta = math.ceil((Hough_theta/2)-plus)
+        theta = math.ceil((Hough_theta/2)-plus/angle)
 
+    if(a == 0):
+        theta = 0
 
     # print("THETA: ", theta)
 
@@ -254,7 +196,6 @@ for i in range(len(csvdata)):
 for i in range(len(csvdata)):
     current = csvdata[i] 
 
-    csvdata[i]["ThetaRho"] = ast.literal_eval(current["ThetaRho"])
     csvdata[i]["2D_orig"] = ast.literal_eval(current["2D_orig"])
     csvdata[i]["2D_376"]  = ast.literal_eval(current["2D_376"])
     csvdata[i]["2D_512"]  = ast.literal_eval(current["2D_512"])
@@ -265,19 +206,14 @@ for i in range(len(csvdata)):
 ThetaRho_array = []
 ThetaRhoSmallimg_array = []
 
-for i in range(3):
+for i in range(len(csvdata)):
     smallimage = csvdata[i]["2D_512"]
     print("-------", len(smallimage))
-
-    print("DATA 512")
-    print(smallimage)
-
     
     for line in smallimage:
         theta = ThetaCalc(line)
-        rho = RhoCalc2(line)
+        rho = RhoCalc(line)
         thetarho = [theta,rho]
-        print("RHO THETA", thetarho)
         ThetaRho_array.append(thetarho)
         thetarho = []
 
@@ -301,7 +237,7 @@ def write_data_to_csv(data_array, filename):
         for data in data_array:
             writer.writerow(data)   
 
-# write_data_to_csv(csvdata, filename)
+write_data_to_csv(csvdata, filename)
     
 
         
