@@ -6,17 +6,16 @@ import ast
 
 
 #INPUT
-# file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Every_data_2.csv'
-# images_path = 'project/Datasets/KITTI_360/2013_05_28_drive_0000_sync/image_00/data_rect'
-# newimages376_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/IMAGES/NewCutted_376'
-# newimages512_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/IMAGES/NewCutted_512'
-# newimagesGT_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/IMAGES/NewCutted_GT'
+file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Every_data_2.csv'
+images_path = '/project/Datasets/KITTI_360/2013_05_28_drive_0000_sync/image_00/data_rect/'
+newimages512_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/IMAGES/NewCutted_512/'
+newimages512GT_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/IMAGES/NewCutted_512GT/'
 
-file_path = '/Volumes/TIMKA/NEW_CNN/matfiles/Every_data_2.csv'
-images_path = '/Volumes/TIMKA/NEW_CNN/Images/Kitti_360/orig/'
-newimages376_path = '/Volumes/TIMKA/NEW_CNN/Images/NewCutting/Newcutted_376/'
-newimages512_path = '/Volumes/TIMKA/NEW_CNN/Images/NewCutting/NewCutted_512/'
-newimages512GT_path = '/Volumes/TIMKA/NEW_CNN/Images/NewCutting/NewCutted_GT/'
+# file_path = '/Volumes/TIMKA/NEW_CNN/matfiles/Every_data_2.csv'
+# images_path = '/Volumes/TIMKA/NEW_CNN/Images/Kitti_360/orig/'
+# newimages376_path = '/Volumes/TIMKA/NEW_CNN/Images/NewCutting/Newcutted_376/'
+# newimages512_path = '/Volumes/TIMKA/NEW_CNN/Images/NewCutting/NewCutted_512/'
+# newimages512GT_path = '/Volumes/TIMKA/NEW_CNN/Images/NewCutting/NewCutted_GT/'
 
 
 
@@ -115,7 +114,9 @@ for i in range(len(csvdata)):
 
 
 # GOES THROUGH EVERY SMALL IMAGE
-for i in range(1):
+for i in range(len(csvdata)):
+    if(i%10 == 0):
+        print(i, "--------", len(csvdata))
     current = csvdata[i]
     imagename = str(current["ID"])
     splitimagename =  imagename.split("_")  # Split the string into parts
