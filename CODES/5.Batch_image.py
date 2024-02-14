@@ -107,13 +107,25 @@ def findallbetweenpairs(searchingfor, pairsearchfor):
     for pair in data[:]:
         if (pair["data1_bigname"] == searchingfor and pair["data2_bigname"] == pairsearchfor
                 or pair["data2_bigname"] == searchingfor and pair["data1_bigname"] == pairsearchfor):
-
-            if (ihave100 != 100):
-                ihave100 = ihave100 + 1
+            
+            if(len(smallimagepairs) != 10):
                 batcharray.append(pair)
                 data.remove(pair)
+                if (pair["data1_imageid"], pair["data2_imageid"]) in smallimagepairs or (pair["data2_imageid"], pair["data1_imageid"]) in smallimagepairs:
+                    # Do nothing (condition is true)
+                    pass
+                else:
+                    smallimagepairs.add((pair["data1_imageid"], pair["data2_imageid"]))
             else:
                 return True
+
+
+            # if (ihave100 != 100):
+            #     ihave100 = ihave100 + 1
+            #     batcharray.append(pair)
+            #     data.remove(pair)
+            # else:
+            #     return True
     return False
 
 
@@ -201,6 +213,7 @@ data = arrangedata(data)
 searchingfor = data[0]["data1_bigname"]
 # Bach array
 batcharray = []
+smallimagepairs = set()
 # The array that determines the next item we are looking for
 havetosearch = []
 
@@ -210,9 +223,9 @@ ihave100 = 0
 ihave100True = False
 
 while len(data) > 0:
-    if (len(data) % 10 == 0):
-        print(len(data), len(everybatch))
-        print("-------------")
+    # if (len(data) % 10 == 0):
+        # print(len(data), len(everybatch))
+        # print("-------------")
     pairsearchfor = findpair(searchingfor)
     if (pairsearchfor == False):
         if (len(havetosearch) != 0):
@@ -224,10 +237,26 @@ while len(data) > 0:
         ihave100True = findallbetweenpairs(searchingfor, pairsearchfor)
         if (ihave100True == True):
             everybatch.append(batcharray)
+
+
+            print("BATCH ARRAY-----------------------------")
+            for data in range(len(batcharray)):
+                print(data, "---", batcharray[data]["data1_imageid"], "-------", batcharray[data]["data2_imageid"] )
+            print("SMALL IMAGE PAIRS-------------------------")
+            num = 0
+            for data in smallimagepairs:
+                num = num+1
+                print(num, "---",data)
+            
+
+
+
+
+
             batcharray = []
             ihave100 = 0
             ihave100True = False
-            if (len(everybatch) == 50):
+            if (len(everybatch) == 100):
                 break
 
 indexdata = []
