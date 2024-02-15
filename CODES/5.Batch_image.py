@@ -109,13 +109,15 @@ def findallbetweenpairs(searchingfor, pairsearchfor):
                 or pair["data2_bigname"] == searchingfor and pair["data1_bigname"] == pairsearchfor):
             
             if(len(smallimagepairs) != 10):
-                batcharray.append(pair)
-                data.remove(pair)
                 if (pair["data1_imageid"], pair["data2_imageid"]) in smallimagepairs or (pair["data2_imageid"], pair["data1_imageid"]) in smallimagepairs:
                     # Do nothing (condition is true)
                     pass
                 else:
                     smallimagepairs.add((pair["data1_imageid"], pair["data2_imageid"]))
+
+                batcharray.append(pair)
+                data.remove(pair)
+
             else:
                 return True
 
@@ -126,6 +128,8 @@ def findallbetweenpairs(searchingfor, pairsearchfor):
             #     data.remove(pair)
             # else:
             #     return True
+            
+
     return False
 
 
@@ -207,6 +211,9 @@ def writepairs(index, everypairs, indexdata):
 
 ############# CODE STARTS ##########
 
+
+
+
 data = arrangedata(data)
 
 # The item we want to find the pairs for
@@ -214,6 +221,7 @@ searchingfor = data[0]["data1_bigname"]
 # Bach array
 batcharray = []
 smallimagepairs = set()
+batchimagpairs = []
 # The array that determines the next item we are looking for
 havetosearch = []
 
@@ -239,25 +247,33 @@ while len(data) > 0:
             everybatch.append(batcharray)
 
 
-            print("BATCH ARRAY-----------------------------")
-            for data in range(len(batcharray)):
-                print(data, "---", batcharray[data]["data1_imageid"], "-------", batcharray[data]["data2_imageid"] )
-            print("SMALL IMAGE PAIRS-------------------------")
-            num = 0
-            for data in smallimagepairs:
-                num = num+1
-                print(num, "---",data)
+            # print("BATCH ARRAY-----------------------------")
+            # for data in range(len(batcharray)):
+            #     print(data, "---", batcharray[data]["data1_imageid"], "-------", batcharray[data]["data2_imageid"] )
+            # print("SMALL IMAGE PAIRS-------------------------")
+            # num = 0
+            # for data in smallimagepairs:
+            #     num = num+1
+            #     print(num, "---",data)
             
-
-
-
-
 
             batcharray = []
             ihave100 = 0
             ihave100True = False
+            # Convert the set of pairs to a list of lists
+            list_smallimagepairs = [list(pair) for pair in smallimagepairs]
+            batchimagpairs.append(list_smallimagepairs)
+            smallimagepairs = set()
             if (len(everybatch) == 100):
                 break
+
+
+
+
+
+
+
+
 
 indexdata = []
 segedarr = []
@@ -269,6 +285,14 @@ everyindexdata = []
 
 everypair = []
 everypairs = []
+
+
+
+
+
+
+
+
 
 for every in everybatch:
 
@@ -317,8 +341,10 @@ for index in range(len(everymatrix)):
 
     batchydicty = {}
     matlab_cell = {f'Index_{i + 1}': str(everyindexdata[index][i]) for i in range(len(everyindexdata[index]))}
+    pairs_cell = {f'Index_{i + 1}': str(batchimagpairs[index][i]) for i in range(len(batchimagpairs[index]))}
     batchydicty["Matrix"] = everymatrix[index]
     batchydicty["datarray"] = matlab_cell
+    batchydicty["pairs"] = pairs_cell
     key = "B" + numstr
     final_dict[key] = batchydicty
 
