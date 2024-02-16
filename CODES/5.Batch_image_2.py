@@ -12,22 +12,22 @@ import numpy as np
 from matplotlib.colors import ListedColormap
 
 # INPUT
-# file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Everything_2.mat'
-# structname = 'Everything_2'
-file_path = '/Volumes/TIMKA/NEW_CNN/matfiles/Everything_2.mat'
+file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Everything_2.mat'
 structname = 'Everything_2'
+# file_path = '/Volumes/TIMKA/NEW_CNN/matfiles/Everything_2.mat'
+# structname = 'Everything_2'
 
 # OUTPUT
-# savemathere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_10ImageTest.mat'
-# savecsvhere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_.csv'
-savemathere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches_10ImageTest.mat'
-savecsvhere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches.csv'
+savemathere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_10ImageTest.mat'
+savecsvhere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_.csv'
+# savemathere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches_10ImageTest.mat'
+# savecsvhere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches.csv'
 index = 0
 
-imagesavepath = f'/Volumes/TIMKA/NEW_CNN/Images/Matrixes/'
-txtsavepath = f'/Volumes/TIMKA/NEW_CNN/Images/Matrixes/'
-# imagesavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Images/Matrixes/'
-# txtsavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Images/Matrixes/'
+# imagesavepath = f'/Volumes/TIMKA/NEW_CNN/Images/Matrixes/'
+# txtsavepath = f'/Volumes/TIMKA/NEW_CNN/Images/Matrixes/'
+imagesavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Images/Matrixes/'
+txtsavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Images/Matrixes/'
 
 data_load = scipy.io.loadmat(file_path)
 data = data_load[structname]
@@ -197,7 +197,7 @@ while len(data) > 0:
         searchingfor = data[searchnumber]["data1_imageid"]
 
 
-    if(len(batchimagpairs) == 10):
+    if(len(batchimagpairs) == 4):
         everypairs.append(batchimagpairs)
         batchimagpairs = []
         nomatch = []

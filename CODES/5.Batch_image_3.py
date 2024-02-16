@@ -18,7 +18,7 @@ structname = 'Everything_2'
 # structname = 'Everything_2'
 
 # OUTPUT
-savemathere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_10ImageTest.mat'
+savemathere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_10ImageTest3.mat'
 savecsvhere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_.csv'
 # savemathere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches_10ImageTest.mat'
 # savecsvhere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches.csv'
@@ -31,7 +31,6 @@ txtsavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Images/
 
 data_load = scipy.io.loadmat(file_path)
 data = data_load[structname]
-
 
 ##### DATA STRUCTURE ####
 
@@ -258,7 +257,7 @@ bigimagecheck = []
 havetosearch = []
 
 everybatch = []
-everypairs = []
+everysmallpairs = []
 
 ihave100 = 0
 ihave100True = False
@@ -285,12 +284,12 @@ while len(data) > 0:
             batcharray = []
             ihave100 = 0
             ihave100True = False
-            everypairs.append(smallimagepairs)
+            everysmallpairs.append(smallimagepairs)
             print(smallimagepairs)
             smallimagepairs = []
             bigimagecheck = []
-            if (len(everybatch) == 10):
-                break
+            # if (len(everybatch) == 1):
+            #     break
 
 indexdata = []
 segedarr = []
@@ -345,12 +344,14 @@ num = 0
 final_dict = {}
 dicty = {}
 
+
+
 for index in range(len(everymatrix)):
     numstr = str(index)
 
     batchydicty = {}
-    matlab_cell = {f'Index_{i + 1}': str(everyindexdata[index][i]) for i in range(len(everyindexdata[index]))}
-    pairs_cell = {f'Index_{i + 1}': str(everypairs[index][i]) for i in range(len(everypairs[index]))}
+    matlab_cell = {f'Index_{i + 1}': str(everyindexdata[index][i]) for i in range(len(everyindexdata))}
+    pairs_cell = {f'Images': str(everysmallpairs[index])}
     batchydicty["Matrix"] = everymatrix[index]
     batchydicty["datarray"] = matlab_cell
     batchydicty["pairs"] = pairs_cell
@@ -358,26 +359,3 @@ for index in range(len(everymatrix)):
     final_dict[key] = batchydicty
 
 scipy.io.savemat(savemathere, {'batches': final_dict})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
