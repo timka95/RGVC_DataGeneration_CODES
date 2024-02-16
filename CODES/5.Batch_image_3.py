@@ -12,22 +12,22 @@ import numpy as np
 from matplotlib.colors import ListedColormap
 
 # INPUT
-file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Everything_2.mat'
-structname = 'Everything_2'
-# file_path = '/Volumes/TIMKA/NEW_CNN/matfiles/Everything_2.mat'
+# file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Everything_2.mat'
 # structname = 'Everything_2'
+file_path = '/Volumes/TIMKA/NEW_CNN/matfiles/Everything_2.mat'
+structname = 'Everything_2'
 
 # OUTPUT
-savemathere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_10ImageTest.mat'
-savecsvhere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_.csv'
-# savemathere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches_10ImageTest.mat'
-# savecsvhere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches.csv'
+# savemathere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_10ImageTest.mat'
+# savecsvhere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_.csv'
+savemathere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches_10ImageTest.mat'
+savecsvhere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches.csv'
 index = 0
 
-# imagesavepath = f'/Volumes/TIMKA/NEW_CNN/Images/Matrixes/'
-# txtsavepath = f'/Volumes/TIMKA/NEW_CNN/Images/Matrixes/'
-imagesavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Images/Matrixes/'
-txtsavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Images/Matrixes/'
+imagesavepath = f'/Volumes/TIMKA/NEW_CNN/Images/Matrixes/'
+txtsavepath = f'/Volumes/TIMKA/NEW_CNN/Images/Matrixes/'
+# imagesavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Images/Matrixes/'
+# txtsavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Images/Matrixes/'
 
 data_load = scipy.io.loadmat(file_path)
 data = data_load[structname]
@@ -258,7 +258,7 @@ bigimagecheck = []
 havetosearch = []
 
 everybatch = []
-everypairs = []
+everysmallpairs = []
 
 ihave100 = 0
 ihave100True = False
@@ -285,11 +285,11 @@ while len(data) > 0:
             batcharray = []
             ihave100 = 0
             ihave100True = False
-            everypairs.append(smallimagepairs)
+            everysmallpairs.append(smallimagepairs)
             print(smallimagepairs)
             smallimagepairs = []
             bigimagecheck = []
-            if (len(everybatch) == 10):
+            if (len(everybatch) == 1):
                 break
 
 indexdata = []
@@ -345,12 +345,14 @@ num = 0
 final_dict = {}
 dicty = {}
 
+
+
 for index in range(len(everymatrix)):
     numstr = str(index)
 
     batchydicty = {}
-    matlab_cell = {f'Index_{i + 1}': str(everyindexdata[index][i]) for i in range(len(everyindexdata[index]))}
-    pairs_cell = {f'Index_{i + 1}': str(everypairs[index][i]) for i in range(len(everypairs[index]))}
+    matlab_cell = {f'Index_{i + 1}': str(everyindexdata[index][i]) for i in range(len(everyindexdata))}
+    pairs_cell = {f'Images': str(everysmallpairs[index])}
     batchydicty["Matrix"] = everymatrix[index]
     batchydicty["datarray"] = matlab_cell
     batchydicty["pairs"] = pairs_cell
