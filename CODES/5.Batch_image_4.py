@@ -12,25 +12,27 @@ import numpy as np
 from matplotlib.colors import ListedColormap
 
 # INPUT
-file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Everything_2.mat'
-structname = 'Everything_2'
-# file_path = '/Volumes/TIMKA/NEW_CNN/matfiles/Everything_2.mat'
+# file_path = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Everything_2.mat'
 # structname = 'Everything_2'
+file_path = '/Volumes/TIMKA/NEW_CNN/matfiles/Everything_2.mat'
+structname = 'Everything_2'
 
 # OUTPUT
-savemathere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/BachesImageTest_8.mat'
-savecsvhere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_.csv'
-# savemathere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches_10ImageTest.mat'
-# savecsvhere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches.csv'
+# savemathere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_10ImageTest.mat'
+# savecsvhere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_.csv'
+savemathere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches_10ImageTest.mat'
+savecsvhere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches.csv'
 index = 0
 
-# imagesavepath = f'/Volumes/TIMKA/NEW_CNN/Images/Matrixes/'
-# txtsavepath = f'/Volumes/TIMKA/NEW_CNN/Images/Matrixes/'
-imagesavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Images/Matrixes/'
-txtsavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Images/Matrixes/'
+imagesavepath = f'/Volumes/TIMKA/NEW_CNN/Images/Matrixes/'
+txtsavepath = f'/Volumes/TIMKA/NEW_CNN/Images/Matrixes/'
+# imagesavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Images/Matrixes/'
+# txtsavepath = f'/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Images/Matrixes/'
 
 data_load = scipy.io.loadmat(file_path)
 data = data_load[structname]
+
+
 
 ##### DATA STRUCTURE ####
 
@@ -107,31 +109,34 @@ def findallbetweenpairs(searchingfor, pairsearchfor):
         if (pair["data1_bigname"] == searchingfor and pair["data2_bigname"] == pairsearchfor
                 or pair["data2_bigname"] == searchingfor and pair["data1_bigname"] == pairsearchfor):
 
-            if(pair["data1_imageid"] in smallimagepairs):
-                if(pair["data2_imageid"] in smallimagepairs):
-                    batcharray.append(pair)
-                    data.remove(pair)
-                else:
-                    if(len(smallimagepairs) == 8):
+            if(pair["data1_imageid"] in smallimagepairs and pair["data2_imageid"] in smallimagepairs):
+                batcharray.append(pair)
+                data.remove(pair)
+            else:
+                if (pair["data1_imageid"] not in smallimagepairs):
+                    if((len(smallimagepairs) == 10)):
                         return True
                     else:
-                        smallimagepairs.append(pair["data2_imageid"])
-                        batcharray.append(pair)
-                        data.remove(pair)
-            else:
-                if(len(smallimagepairs) == 8):
-                    return True
+                        smallimagepairs.append(pair["data1_imageid"])
+                        bigimagecheck.append(pair["data1_bigname"])
+                        print(smallimagepairs)
+                        if (pair["data2_imageid"] not in smallimagepairs):
+                            if((len(smallimagepairs) == 10)):
+                                return True
+                            else:
+                                smallimagepairs.append(pair["data2_imageid"])
+                                bigimagecheck.append(pair["data2_bigname"])
+                                print(smallimagepairs)
+                                batcharray.append(pair)
+                                data.remove(pair)
                 else:
-                    smallimagepairs.append(pair["data1_imageid"])
-                    #batcharray.append([pair["data1_bigname"], pair["data1_imageid"], pair["data1_ThetaRho"]])
-                    if(pair["data2_imageid"] in batcharray):
-                        batcharray.append(pair)
-                        data.remove(pair)
-                    else:
-                        if(len(smallimagepairs) == 8):
+                    if (pair["data2_imageid"] not in smallimagepairs):
+                        if ((len(smallimagepairs) == 10)):
                             return True
                         else:
                             smallimagepairs.append(pair["data2_imageid"])
+                            bigimagecheck.append(pair["data2_bigname"])
+                            print(smallimagepairs)
                             batcharray.append(pair)
                             data.remove(pair)
 
@@ -259,10 +264,11 @@ everysmallpairs = []
 ihave100 = 0
 ihave100True = False
 previussearch = data[0]["data1_bigname"]
-origlen = len(data)
+
 while len(data) > 0:
-    if (len(data) % 10 == 0):
-        print( origlen,"------", len(data) )
+    # if (len(data) % 10 == 0):
+    # print(len(data), len(everybatch))
+    # print("-------------")
     pairsearchfor = findpair(searchingfor)
     if(pairsearchfor == previussearch):
         pairsearchfor = False
@@ -281,10 +287,11 @@ while len(data) > 0:
             ihave100 = 0
             ihave100True = False
             everysmallpairs.append(smallimagepairs)
+            print(smallimagepairs)
             smallimagepairs = []
             bigimagecheck = []
-            if (len(everybatch) == 10):
-                break
+            # if (len(everybatch) == 1):
+            #     break
 
 indexdata = []
 segedarr = []
@@ -339,7 +346,7 @@ num = 0
 final_dict = {}
 dicty = {}
 
-
+print(everyindexdata)
 
 for index in range(len(everymatrix)):
     numstr = str(index)

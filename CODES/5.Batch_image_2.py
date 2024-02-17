@@ -274,6 +274,8 @@ num = 0
 final_dict = {}
 dicty = {}
 
+print(everyindexdata)
+
 for index in range(len(everymatrix)):
     numstr = str(index)
 
