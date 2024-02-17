@@ -33,6 +33,7 @@ data_load = scipy.io.loadmat(file_path)
 data = data_load[structname]
 
 
+
 ##### DATA STRUCTURE ####
 
 # 1--'data1_imageid',
@@ -289,8 +290,8 @@ while len(data) > 0:
             print(smallimagepairs)
             smallimagepairs = []
             bigimagecheck = []
-            if (len(everybatch) == 10):
-                break
+            # if (len(everybatch) == 1):
+            #     break
 
 indexdata = []
 segedarr = []
@@ -345,7 +346,7 @@ num = 0
 final_dict = {}
 dicty = {}
 
-
+print(everyindexdata)
 
 for index in range(len(everymatrix)):
     numstr = str(index)
@@ -360,26 +361,3 @@ for index in range(len(everymatrix)):
     final_dict[key] = batchydicty
 
 scipy.io.savemat(savemathere, {'batches': final_dict})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
