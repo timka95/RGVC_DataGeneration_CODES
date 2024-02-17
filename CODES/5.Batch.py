@@ -227,7 +227,7 @@ while len(data) > 0:
             batcharray = []
             ihave100 = 0
             ihave100True = False
-            if (len(everybatch) == 50):
+            if (len(everybatch) == 10):
                 break
 
 indexdata = []

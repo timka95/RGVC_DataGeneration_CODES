@@ -38,14 +38,6 @@ def read_csv(file_path):
             csvdata.append([row_dict])
         # Return the csvdata list
         return csvdata
-    
-
-
-
-
-
-
-
 
 
 
