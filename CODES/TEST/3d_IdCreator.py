@@ -66,10 +66,8 @@ for i in range(len(csvdata2)):
 number = 0
 for data in (csvdata2):
     number = number + 1
-    print(data["ID"])
     if(number % 100 == 0):
         print(len(csvdata2), "-------", number)
-        break
 
 
 print(len(csvdata2))
@@ -94,8 +92,6 @@ def process_data(csvdata, csvdata2):
         new_id_data['3D'] = data['3D']
         new_id_data['ThetaRho'] = data['ThetaRho']
         processed_data.append(new_id_data)
-        if(len(processed_data) > 9):
-            return processed_data
 
     return processed_data
 
