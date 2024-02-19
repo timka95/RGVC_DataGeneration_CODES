@@ -1,0 +1,63 @@
+Traceback (most recent call last):
+  File "/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/CODES/TEST/NEW_DATA/Sobel.py", line 39, in <module>
+    sobel_filter[blockspergrid, threadsperblock](d_image, output_image)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/cuda/compiler.py", line 822, in __call__
+    self.stream, self.sharedmem)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/cuda/compiler.py", line 964, in call
+    kernel = _dispatcher.Dispatcher._cuda_call(self, *args)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/cuda/compiler.py", line 972, in _compile_for_args
+    return self.compile(tuple(argtypes))
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/cuda/compiler.py", line 1094, in compile
+    **self.targetoptions)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/compiler_lock.py", line 35, in _acquire_compile_lock
+    return func(*args, **kwargs)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/cuda/compiler.py", line 511, in __init__
+    inline=inline)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/compiler_lock.py", line 35, in _acquire_compile_lock
+    return func(*args, **kwargs)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/cuda/compiler.py", line 53, in compile_cuda
+    locals={})
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/compiler.py", line 606, in compile_extra
+    return pipeline.compile_extra(func)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/compiler.py", line 353, in compile_extra
+    return self._compile_bytecode()
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/compiler.py", line 415, in _compile_bytecode
+    return self._compile_core()
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/compiler.py", line 395, in _compile_core
+    raise e
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/compiler.py", line 386, in _compile_core
+    pm.run(self.state)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/compiler_machinery.py", line 339, in run
+    raise patched_exception
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/compiler_machinery.py", line 330, in run
+    self._runPass(idx, pass_inst, state)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/compiler_lock.py", line 35, in _acquire_compile_lock
+    return func(*args, **kwargs)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/compiler_machinery.py", line 289, in _runPass
+    mutated |= check(pss.run_pass, internal_state)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/compiler_machinery.py", line 262, in check
+    mangled = func(compiler_state)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/typed_passes.py", line 110, in run_pass
+    raise_errors=self._raise_errors)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/typed_passes.py", line 82, in type_inference_stage
+    errs = infer.propagate(raise_errors=raise_errors)
+  File "/home/ntimea/anaconda3/envs/l2d2_2/lib/python3.7/site-packages/numba/core/typeinfer.py", line 1071, in propagate
+    raise errors[0]
+numba.core.errors.TypingError: Failed in nopython mode pipeline (step: nopython frontend)
+Use of unsupported NumPy function 'numpy.sqrt' or unsupported use of the function.
+
+File "Sobel.py", line 18:
+def sobel_filter(input_image, output_image):
+    <source elided>
+
+        output_image[x + 1, y + 1] = np.sqrt(gx ** 2 + gy ** 2)
+        ^
+
+During: typing of get attribute at /project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/CODES/TEST/NEW_DATA/Sobel.py (18)
+
+File "Sobel.py", line 18:
+def sobel_filter(input_image, output_image):
+    <source elided>
+
+        output_image[x + 1, y + 1] = np.sqrt(gx ** 2 + gy ** 2)
+        ^
