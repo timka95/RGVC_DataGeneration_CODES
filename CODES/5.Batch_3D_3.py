@@ -69,8 +69,7 @@ def arrangecsvdata2(csvdata):
 
 def findimage(image, csvdata2):
     for data in csvdata2:
-        ID = data["ID"]
-        if (ID == image):
+        if (data["ID"] == image):
             return data
 
 
@@ -96,8 +95,10 @@ def biggestmach():
         countmatch = len(csvdata[i]["ID"])
 
         if (countmatch > max):
-            max = countmatch
-            biggestid = csvdata[i]["id_3D"]
+            if(csvdata[i]["id_3D"] not in blacklist):
+                max = countmatch
+                biggestid = csvdata[i]["id_3D"]
+
     return max, biggestid
 
 
@@ -150,6 +151,8 @@ csvdata = read_csv(filename)
 csvdata2 = read_csv(filename2)
 max = 0
 
+
+blacklist = []
 arrangecsvdata(csvdata)
 max, biggestid = biggestmach()
 arrangecsvdata2(csvdata2)
@@ -167,7 +170,7 @@ bachdatadicty = {}
 
 allbatchdata = []
 
-blacklist = []
+
 
 while len(csvdata) != len(blacklist):
     number = number + 1
@@ -175,12 +178,15 @@ while len(csvdata) != len(blacklist):
         print(len(csvdata), "-------", len(blacklist))
 
     for image in csvdata[biggestid]["ID"]:
+        if(csvdata[biggestid]["ID"].index(image)+1 == len(csvdata[biggestid]["ID"])):
+            blacklist.append(biggestid)
+
         data = findimage(image, csvdata2)
-        if (len(imagesarray) == 8):
+        if (len(imagesarray) == 4):
             bachimages.append(imagesarray)
             imagesarray = []
             allbatchdata.append(batchdata)
-            # if (len(allbatchdata) == 1000):
+            # if (len(blacklist) >= (len(csvdata)/2)):
             #     break
             batchdata = []
         else:
@@ -190,8 +196,10 @@ while len(csvdata) != len(blacklist):
     blacklist.append(biggestid)
     biggestid = calcbiggestid()
 
-    # if(len(allbatchdata) == 1000):
+    # if (len(blacklist) >= (len(csvdata)/2)):
     #     break
+
+print("for end", len(allbatchdata))
 
 everymatrix = creatematrix(allbatchdata)
 
@@ -210,6 +218,12 @@ for index in range(len(allbatchdata)):
     final_dict[key] = batchydicty
 
 scipy.io.savemat(savemathere, {'batches': final_dict})
+
+
+
+
+
+
 
 
 

@@ -46,16 +46,17 @@ def read_csv(file_path):
 
 def arrangecsvdata(csvdata):
     for i in range(len(csvdata)):
-        csvdata[i] = csvdata[i][0] 
+        csvdata[i] = csvdata[i][0]
         csvdata[i]["id_3D"] = ast.literal_eval(csvdata[i]["id_3D"])
         csvdata[i]["ID"] = ast.literal_eval(csvdata[i]["ID"])
         csvdata[i]["ThetaRho"] = ast.literal_eval(csvdata[i]["ThetaRho"])
         csvdata[i]["2D_512"] = ast.literal_eval(csvdata[i]["2D_512"])
         csvdata[i]["3D"] = ast.literal_eval(csvdata[i]["3D"])
 
+
 def arrangecsvdata2(csvdata):
     for i in range(len(csvdata)):
-        csvdata[i] = csvdata[i][0] 
+        csvdata[i] = csvdata[i][0]
         csvdata[i]["ThetaRho"] = ast.literal_eval(csvdata[i]["ThetaRho"])
         csvdata[i]["2D_512"] = ast.literal_eval(csvdata[i]["2D_512"])
         csvdata[i]["3D"] = ast.literal_eval(csvdata[i]["3D"])
@@ -66,8 +67,8 @@ def arrangecsvdata2(csvdata):
 
 def findimage(image, csvdata2):
     for data in csvdata2:
-        ID= data["ID"]
-        if(ID == image):
+        ID = data["ID"]
+        if (ID == image):
             return data
 
 
@@ -79,7 +80,7 @@ def extractdata(data):
         bachdataarr.append(data["id_3D"][line])
         bachdataarr.append(data["3D"][line])
         bachdataarr.append(data["2D_512"][line])
-        if(data["id_3D"][line] not in check3dinbatch):
+        if (data["id_3D"][line] not in check3dinbatch):
             check3dinbatch[data["id_3D"][line]] = 1
         else:
             check3dinbatch[data["id_3D"][line]] = check3dinbatch[data["id_3D"][line]] + 1
@@ -92,12 +93,13 @@ def biggestmach():
     for i in range(len(csvdata)):
         countmatch = len(csvdata[i]["ID"])
 
-        if(countmatch > max):
+        if (countmatch > max):
             max = countmatch
             biggestid = csvdata[i]["id_3D"]
     return max, biggestid
 
-#ID, ThetaRho, 3D, 3D_id
+
+# ID, ThetaRho, 3D, 3D_id
 def creatematrix(allbatchdata):
     everymatrix = []
     for batch in allbatchdata:
@@ -107,10 +109,9 @@ def creatematrix(allbatchdata):
             line1ID = line1[0].split("_")[0] + "_" + line1[0].split("_")[1]
             for index2, line2 in enumerate(batch):
                 line2ID = line2[0].split("_")[0] + "_" + line2[0].split("_")[1]
-                print(line2ID)
 
-                if(line1[2] == line2[2]):
-                    if(line1ID == line2ID):
+                if (line1[2] == line2[2]):
+                    if (line1ID == line2ID):
                         matrix[index1][index2] = -1
                         matrix[index2][index1] = -1
                     else:

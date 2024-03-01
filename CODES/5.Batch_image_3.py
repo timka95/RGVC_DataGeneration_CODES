@@ -18,7 +18,7 @@ structname = 'Everything_2'
 # structname = 'Everything_2'
 
 # OUTPUT
-savemathere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/BachesImageTest_8.mat'
+savemathere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/BachesImageTest_35.mat'
 savecsvhere = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/Baches_.csv'
 # savemathere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches_10ImageTest.mat'
 # savecsvhere = '/Volumes/TIMKA/NEW_CNN/matfiles/Baches.csv'

@@ -1,20 +1,22 @@
 import numpy as np
 from numba import cuda
 
+
 @cuda.jit
 def sobel_filter(input_image, output_image):
     x, y = cuda.grid(2)
-    
+
     if x < input_image.shape[0] - 2 and y < input_image.shape[1] - 2:
         gx = (input_image[x, y] - input_image[x + 2, y] +
               2 * input_image[x, y + 1] - 2 * input_image[x + 2, y + 1] +
               input_image[x, y + 2] - input_image[x + 2, y + 2])
-              
+
         gy = (input_image[x, y] - input_image[x, y + 2] +
               2 * input_image[x + 1, y] - 2 * input_image[x + 1, y + 2] +
               input_image[x + 2, y] - input_image[x + 2, y + 2])
-        
-        output_image[x + 1, y + 1] = np.sqrt(gx**2 + gy**2)
+
+        output_image[x + 1, y + 1] = np.sqrt(gx ** 2 + gy ** 2)
+
 
 # Load an example image (replace with your image)
 image = np.array([[1, 2, 1],
@@ -41,3 +43,5 @@ output_image = d_image.copy_to_host()
 
 print("Sobel Filter Result:")
 print(output_image)
+
+

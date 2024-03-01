@@ -9,13 +9,15 @@ import ast
 
 
 
-#data = scipy.io.loadmat('/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/new_osszesitett_2.mat')
+#data = scipy.io.loadmat('/home/bence/madTables/osszesitett.mat')
+data = scipy.io.loadmat('/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/new_osszesitett.mat')
+
 #data = scipy.io.loadmat('/Volumes/TIMKA/NEW_CNN/matfiles/new_osszesitett_2.mat')
-data = scipy.io.loadmat('/Volumes/TIMKA/NEW_CNN/matfiles/osszesitett.mat')
+#data = scipy.io.loadmat('/Volumes/TIMKA/NEW_CNN/matfiles/osszesitett.mat')
 
 #OUTPUT
-#filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/matlab/data_cutted_pairs_Everything_2.mat'
-filename = '/Volumes/TIMKA/NEW_CNN/matfiles/osszesitett_3D.csv'
+filename = '/project/ntimea/l2d2/IMAGE_PAIR_GT/CODES/Data_Generation/Matfiles/osszesitett_3D_2.csv'
+#filename = '/Volumes/TIMKA/NEW_CNN/matfiles/osszesitett_3D.csv'
 
 #Name of the struct in the matfile (should be the same as the matfile's name)
 osszesitett_data = data['osszesitett']

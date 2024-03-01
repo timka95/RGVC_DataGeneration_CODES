@@ -1,12 +1,4 @@
 import scipy.io
-import numpy as np
-from PIL import Image, ImageDraw
-import math
-import matplotlib.pyplot as plt
-import scipy.io as sio
-import csv
-from ast import literal_eval
-from collections import deque
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import ListedColormap
